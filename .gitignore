@@ -1,0 +1,18 @@
+# Default ignored files
+/shelf/
+/.idea/workspace.xml
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Log files
+logs/
+
+# Maven/Gradle
+.gradle/
+orderservice/.gradle/
+inventoryservice/.gradle/
+build/
+orderservice/build/
+inventoryservice/build/
