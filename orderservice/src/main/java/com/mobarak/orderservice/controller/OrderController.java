@@ -16,10 +16,9 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
-    public ResponseEntity<String> createOrder(@RequestBody OrderEntity order) {
+    public ResponseEntity<OrderEntity> createOrder(@RequestBody OrderEntity order) {
         try {
-            orderService.createOrder(order);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok(orderService.createOrder(order));
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }

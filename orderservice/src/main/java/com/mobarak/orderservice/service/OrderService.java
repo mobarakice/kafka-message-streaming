@@ -18,10 +18,11 @@ public class OrderService {
 
     private final KafkaTemplate<String, Map<String, String>> kafkaTemplate;
 
-    public void createOrder(OrderEntity order) {
+    public OrderEntity createOrder(OrderEntity order) {
         order.setStatus("created");
         OrderEntity savedOrder = orderRepository.save(order);
         kafkaTemplate.send(Constant.ORDER_CREATED_TOPIC, prepareKafkaMessage(savedOrder));
+        return savedOrder;
     }
 
     @KafkaListener(topics = Constant.ORDER_PROCESSED_TOPIC)
