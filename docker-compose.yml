@@ -1,98 +1,79 @@
-version: '3.8'
-
 services:
 
   zookeeper:
     image: bitnami/zookeeper:latest
+    container_name: zookeeper
     environment:
-      - ALLOW_ANONYMOUS_LOGIN=yes
+      ZOO_ENABLE_AUTH: false
+      ALLOW_ANONYMOUS_LOGIN: yes
     ports:
       - "2181:2181"
+    networks:
+      - sweet-savvy-net
 
   kafka:
-    image: bitnami/zookeeper:latest
+    image: bitnami/kafka:latest
+    container_name: kafka
     ports:
       - "9092:9092"
+      - "29092:29092"  # Add this line to map the host port 29092 to the container port 29092
     environment:
       KAFKA_BROKER_ID: 1
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,PLAINTEXT_HOST://0.0.0.0:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_ADVERTISED_HOST_NAME: kafka
+      ALLOW_PLAINTEXT_LISTENER: yes
+      KAFKA_MAX_MESSAGE_BYTES: 2000000000  # Set to 2 GB, for example
+    depends_on:
+      - zookeeper
+    networks:
+      - sweet-savvy-net
 
-  #  zookeeper:
-#    image: bitnami/zookeeper:latest
-#    ports:
-#      - "2181:2181"
-#
-#  kafka:
-#    image: bitnami/kafka:latest
-#    ports:
-#      - "9092:9092"
-#    environment:
-#      KAFKA_ADVERTISED_HOST_NAME: localhost
-#      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-
-#  zookeeper:
-#    image: bitnami/zookeeper:latest
-#    environment:
-#      - ALLOW_ANONYMOUS_LOGIN=yes
-#    networks:
-#      - kafka-net
-#    ports:
-#      - "2181:2181"
-#
-#  kafka:
-#    image: bitnami/kafka:latest
-#    environment:
-#      - KAFKA_BROKER_ID=1
-#      - KAFKA_LISTENERS=PLAINTEXT://:9092
-#      - KAFKA_ADVERTISED_LISTENERS=kafka
-#      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
-#      - ALLOW_PLAINTEXT_LISTENER=yes
-#    depends_on:
-#      - zookeeper
-#    networks:
-#      - kafka-net
-#    ports:
-#      - "9092:9092"
-
-  order-service:
+  order:
     build:
-      context: ./OrderService
+      context: ./order
       dockerfile: Dockerfile
+    container_name: order
     ports:
       - "8080:8080"
     environment:
-      - SPRING_PROFILES_ACTIVE=docker
-      - SPRING_DATASOURCE_URL=jdbc:h2:mem:ordersdb
-      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.h2.Driver
-      - SPRING_DATASOURCE_USERNAME=sa
-      - SPRING_DATASOURCE_PASSWORD=password
-      - SPRING_JPA_DATABASE_PLATFORM=org.hibernate.dialect.H2Dialect
-      - SPRING_H2_CONSOLE_ENABLED=true
-      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:h2:mem:ordersdb
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.h2.Driver
+      SPRING_DATASOURCE_USERNAME: sa
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.H2Dialect
+      SPRING_H2_CONSOLE_ENABLED: true
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
     depends_on:
       - kafka
-
-  inventory-service:
+    networks:
+      - sweet-savvy-net
+  #
+  inventory:
     build:
-      context: ./InventoryService
+      context: ./inventory
       dockerfile: Dockerfile
+    container_name: inventory
     ports:
       - "8081:8081"
     environment:
-      - SPRING_PROFILES_ACTIVE=docker
-      - SPRING_DATASOURCE_URL=jdbc:h2:mem:inventorydb
-      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.h2.Driver
-      - SPRING_DATASOURCE_USERNAME=sa
-      - SPRING_DATASOURCE_PASSWORD=password
-      - SPRING_JPA_DATABASE_PLATFORM=org.hibernate.dialect.H2Dialect
-      - SPRING_H2_CONSOLE_ENABLED=true
-      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:h2:mem:inventorydb
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.h2.Driver
+      SPRING_DATASOURCE_USERNAME: sa
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.H2Dialect
+      SPRING_H2_CONSOLE_ENABLED: true
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
     depends_on:
       - kafka
+    networks:
+      - sweet-savvy-net
 
 networks:
-  kafka-net:
+  sweet-savvy-net:
     driver: bridge

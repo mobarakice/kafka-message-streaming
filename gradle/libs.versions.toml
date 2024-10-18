@@ -1,0 +1,41 @@
+[versions]
+springBoot = "3.3.4"
+springBootDM = "1.1.6"
+springDoc = "1.8.0"
+jsonpath = "2.8.1"
+modelMapper = "3.2.0"
+modelMapperRecord = "1.0.0"
+lombok = "1.18.34"
+postgresql = "42.7.2"
+mysql = "8.0.33"
+hibernate = "6.2.8.Final"
+jjwt = "0.12.6"
+
+[libraries]
+starter-data-jdbc = { group = "org.springframework.boot", name = "spring-boot-starter-data-jdbc" }
+starter-data-jpa = { group = "org.springframework.boot", name = "spring-boot-starter-data-jpa" }
+starter-data-rest = { group = "org.springframework.boot", name = "spring-boot-starter-data-rest" }
+starter-jdbc = { group = "org.springframework.boot", name = "spring-boot-starter-jdbc" }
+starter-security = { group = "org.springframework.boot", name = "spring-boot-starter-security" }
+starter-validation = { group = "org.springframework.boot", name = "spring-boot-starter-validation" }
+starter-web = { group = "org.springframework.boot", name = "spring-boot-starter-web" }
+starter-web-services = { group = "org.springframework.boot", name = "spring-boot-starter-web-services" }
+boot-devtools = { group = "org.springframework.boot", name = "spring-boot-devtools" }
+starter-test = { group = "org.springframework.boot", name = "spring-boot-starter-test" }
+postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresql" }
+mysql = { module = "mysql:mysql-connector-java", version.ref = "mysql" }
+hibernate = { group = "org.hibernate.orm", name = "hibernate-core", version.ref = "hibernate" }
+springdoc-openapi-ui = { module = "org.springdoc:springdoc-openapi-ui", version.ref = "springDoc" }
+springdoc-openapi-data-rest = { module = "org.springdoc:springdoc-openapi-data-rest", version.ref = "springDoc" }
+jsonpath = { module = "com.jayway.jsonpath:json-path", version.ref = "jsonpath" }
+modelmapper = { module = "org.modelmapper:modelmapper", version.ref = "modelMapper" }
+modelmapper-record = { module = "org.modelmapper:modelmapper-module-record", version.ref = "modelMapperRecord" }
+lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
+jjwt = { module = "io.jsonwebtoken:jjwt-api", version.ref = "jjwt" }
+jjwt-impl = { module = "io.jsonwebtoken:jjwt-impl", version.ref = "jjwt" }
+jjwt-jackson = { module = "io.jsonwebtoken:jjwt-jackson", version.ref = "jjwt" }
+
+[plugins]
+spring-framework = { id = "org.springframework.boot", version.ref = "springBoot" }
+spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "springBootDM" }
